@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEGIS — Ciberseguridad del Futuro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c14;
+    --surface: #0d1321;
+    --border: rgba(99,179,255,0.12);
+    --accent: #3b8bff;
+    --accent2: #ff5e3a;
+    --accent3: #00f5c4;
+    --text: #e8edf5;
+    --muted: #6b7a99;
+    --glow: rgba(59,139,255,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    overflow-x:hidden;
+    cursor:none;
+  }
+
+  /* CUSTOM CURSOR */
+  #cursor{
+    position:fixed;width:12px;height:12px;border-radius:50%;
+    background:var(--accent);pointer-events:none;z-index:9999;
+    transition:transform .15s ease;mix-blend-mode:screen;
+  }
+  #cursor-ring{
+    position:fixed;width:40px;height:40px;border-radius:50%;
+    border:1px solid rgba(59,139,255,0.5);pointer-events:none;z-index:9998;
+    transition:transform .35s ease,opacity .3s;
+  }
+
+  /* NOISE OVERLAY */
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity:.4;pointer-events:none;z-index:1;
+  }
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:1.2rem 3rem;
+    background:rgba(8,12,20,0.7);
+    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    transition:all .3s;
+  }
+  .nav-logo{
+    font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;
+    letter-spacing:.2em;color:var(--text);
+    display:flex;align-items:center;gap:.6rem;
+  }
+  .nav-logo span{color:var(--accent);}
+  .logo-icon{width:28px;height:28px;position:relative;}
+  .logo-icon::before,.logo-icon::after{
+    content:'';position:absolute;border:2px solid var(--accent);
+  }
+  .logo-icon::before{inset:0;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);}
+  .logo-icon::after{inset:5px;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);background:var(--accent);opacity:.3;}
+  .nav-links{display:flex;align-items:center;gap:2rem;}
+  .nav-links a{
+    font-family:'Space Mono',monospace;font-size:.75rem;
+    color:var(--muted);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;
+    transition:color .2s;position:relative;
+  }
+  .nav-links a::after{
+    content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;
+    background:var(--accent);transform:scaleX(0);transition:transform .2s;
+  }
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a:hover::after{transform:scaleX(1);}
+  .nav-dropdown{position:relative;}
+  .dropdown-menu{
+    display:none;position:absolute;top:calc(100% + 1rem);left:50%;transform:translateX(-50%);
+    background:rgba(13,19,33,0.95);backdrop-filter:blur(20px);
+    border:1px solid var(--border);border-radius:12px;padding:1rem;
+    min-width:200px;flex-direction:column;gap:.5rem;
+  }
+  .nav-dropdown:hover .dropdown-menu{display:flex;}
+  .dropdown-menu a{display:block;padding:.5rem .75rem;border-radius:6px;transition:background .2s;}
+  .dropdown-menu a:hover{background:rgba(59,139,255,0.1);}
+  .btn-nav{
+    background:var(--accent);color:#fff;border:none;
+    padding:.6rem 1.4rem;border-radius:8px;font-family:'Space Mono',monospace;
+    font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;cursor:none;
+    transition:all .2s;text-decoration:none;
+  }
+  .btn-nav:hover{background:#2a7aee;box-shadow:0 0 20px var(--glow);}
+
+  /* HERO */
+  #hero{
+    min-height:100vh;display:flex;align-items:center;
+    padding:0 3rem;position:relative;overflow:hidden;
+  }
+  .hero-grid{
+    position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(59,139,255,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(59,139,255,0.04) 1px,transparent 1px);
+    background-size:60px 60px;
+    animation:gridMove 20s linear infinite;
+  }
+  @keyframes gridMove{to{transform:translateY(60px);}}
+  .hero-glow{
+    position:absolute;top:20%;left:55%;
+    width:600px;height:600px;border-radius:50%;
+    background:radial-gradient(circle,rgba(59,139,255,0.15) 0%,transparent 70%);
+    animation:pulseGlow 4s ease-in-out infinite;
+  }
+  .hero-glow2{
+    position:absolute;bottom:10%;left:30%;
+    width:400px;height:400px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,94,58,0.1) 0%,transparent 70%);
+    animation:pulseGlow 6s ease-in-out infinite reverse;
+  }
+  @keyframes pulseGlow{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.1);opacity:.7;}}
+  .hero-content{position:relative;z-index:2;max-width:720px;}
+  .hero-tag{
+    font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.2em;
+    color:var(--accent);text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;
+    padding:.4rem .8rem;border:1px solid rgba(59,139,255,0.3);border-radius:100px;
+  }
+  .tag-dot{width:6px;height:6px;border-radius:50%;background:var(--accent3);animation:blink 1.5s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+  .hero-title{
+    font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3.5rem,8vw,7rem);
+    line-height:.95;letter-spacing:-.02em;margin-bottom:1.5rem;
+    background:linear-gradient(135deg,#fff 0%,#8ab8ff 60%,var(--accent) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero-title .line2{
+    background:linear-gradient(135deg,var(--accent2) 0%,#ff8c6b 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    display:block;
+  }
+  .hero-sub{
+    font-size:1.1rem;color:var(--muted);line-height:1.7;
+    max-width:500px;margin-bottom:2.5rem;font-weight:300;
+  }
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;}
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),#1a6fd4);
+    color:#fff;border:none;padding:.9rem 2rem;border-radius:10px;
+    font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.1em;
+    text-transform:uppercase;cursor:none;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--glow);}
+  .btn-outline{
+    background:transparent;color:var(--text);border:1px solid var(--border);
+    padding:.9rem 2rem;border-radius:10px;font-family:'Space Mono',monospace;font-size:.8rem;
+    letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:all .3s;text-decoration:none;
+  }
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
+  .hero-stats{
+    display:flex;gap:3rem;margin-top:4rem;padding-top:2rem;
+    border-top:1px solid var(--border);
+  }
+  .stat-item{display:flex;flex-direction:column;gap:.3rem;}
+  .stat-num{
+    font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;
+    background:linear-gradient(135deg,var(--accent3),var(--accent));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .stat-label{font-size:.75rem;color:var(--muted);font-family:'Space Mono',monospace;letter-spacing:.1em;}
+  .hero-visual{
+    position:absolute;right:-50px;top:50%;transform:translateY(-50%);
+    width:500px;height:500px;
+  }
+  .orb-ring{
+    position:absolute;border-radius:50%;border:1px solid rgba(59,139,255,0.2);
+    animation:spin linear infinite;
+  }
+  .orb-ring:nth-child(1){inset:0;animation-duration:20s;}
+  .orb-ring:nth-child(2){inset:40px;animation-duration:15s;border-color:rgba(255,94,58,0.15);animation-direction:reverse;}
+  .orb-ring:nth-child(3){inset:80px;animation-duration:25s;border-color:rgba(0,245,196,0.12);}
+  .orb-core{
+    position:absolute;inset:120px;border-radius:50%;
+    background:radial-gradient(circle at 40% 40%,rgba(59,139,255,0.4),rgba(59,139,255,0.05));
+    border:1px solid rgba(59,139,255,0.3);
+    box-shadow:0 0 80px rgba(59,139,255,0.2);
+    animation:orb-pulse 3s ease-in-out infinite;
+  }
+  @keyframes orb-pulse{0%,100%{box-shadow:0 0 80px rgba(59,139,255,0.2);}50%{box-shadow:0 0 120px rgba(59,139,255,0.4);}}
+  .orb-dot{
+    position:absolute;width:8px;height:8px;border-radius:50%;background:var(--accent3);
+    box-shadow:0 0 12px var(--accent3);
+    animation:orbit 8s linear infinite;
+    top:50%;left:50%;margin:-4px;
+  }
+  @keyframes orbit{from{transform:rotate(0deg) translateX(180px) rotate(0deg);}to{transform:rotate(360deg) translateX(180px) rotate(-360deg);}}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+  /* SCROLL ANIMATIONS */
+  .reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(0.16,1,0.3,1);}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .reveal-left{opacity:0;transform:translateX(-40px);transition:all .8s cubic-bezier(0.16,1,0.3,1);}
+  .reveal-left.visible{opacity:1;transform:translateX(0);}
+  .reveal-right{opacity:0;transform:translateX(40px);transition:all .8s cubic-bezier(0.16,1,0.3,1);}
+  .reveal-right.visible{opacity:1;transform:translateX(0);}
+  .reveal-scale{opacity:0;transform:scale(.9);transition:all .8s cubic-bezier(0.16,1,0.3,1);}
+  .reveal-scale.visible{opacity:1;transform:scale(1);}
+  .delay-1{transition-delay:.1s;}
+  .delay-2{transition-delay:.2s;}
+  .delay-3{transition-delay:.3s;}
+  .delay-4{transition-delay:.4s;}
+  .delay-5{transition-delay:.5s;}
+
+  /* SECTION */
+  section{padding:7rem 3rem;position:relative;}
+  .section-tag{
+    font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.2em;
+    color:var(--accent);text-transform:uppercase;margin-bottom:1rem;display:block;
+  }
+  .section-title{
+    font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.5rem);
+    font-weight:800;line-height:1.1;margin-bottom:1.5rem;
+  }
+  .section-sub{color:var(--muted);line-height:1.7;max-width:550px;font-weight:300;}
+
+  /* SERVICES */
+  #services{background:var(--surface);}
+  .services-header{text-align:center;margin-bottom:4rem;}
+  .services-header .section-sub{margin:0 auto;}
+  .services-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;
+  }
+  .service-card{
+    background:rgba(255,255,255,0.02);border:1px solid var(--border);
+    border-radius:16px;padding:2rem;
+    transition:all .3s;position:relative;overflow:hidden;
+    cursor:none;
+  }
+  .service-card::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,rgba(59,139,255,0.05),transparent);
+    opacity:0;transition:opacity .3s;
+  }
+  .service-card:hover::before{opacity:1;}
+  .service-card:hover{border-color:rgba(59,139,255,0.3);transform:translateY(-4px);}
+  .service-icon{
+    width:52px;height:52px;border-radius:12px;
+    background:linear-gradient(135deg,rgba(59,139,255,0.15),rgba(59,139,255,0.05));
+    border:1px solid rgba(59,139,255,0.2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.4rem;margin-bottom:1.5rem;
+  }
+  .service-card h3{
+    font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:.75rem;
+  }
+  .service-card p{color:var(--muted);font-size:.9rem;line-height:1.6;}
+  .service-badge{
+    position:absolute;top:1.5rem;right:1.5rem;
+    font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+    padding:.3rem .6rem;border-radius:100px;
+  }
+  .badge-hot{background:rgba(255,94,58,0.15);color:var(--accent2);border:1px solid rgba(255,94,58,0.3);}
+  .badge-new{background:rgba(0,245,196,0.1);color:var(--accent3);border:1px solid rgba(0,245,196,0.3);}
+
+  /* PRICING */
+  #pricing{}
+  .pricing-header{text-align:center;margin-bottom:4rem;}
+  .pricing-header .section-sub{margin:0 auto;}
+  .pricing-toggle{
+    display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem;
+  }
+  .toggle-label{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);letter-spacing:.1em;}
+  .toggle-switch{
+    width:48px;height:26px;background:rgba(59,139,255,0.2);border-radius:100px;
+    position:relative;cursor:none;border:1px solid var(--border);transition:background .3s;
+  }
+  .toggle-switch.on{background:rgba(59,139,255,0.4);}
+  .toggle-knob{
+    position:absolute;top:3px;left:3px;width:18px;height:18px;
+    border-radius:50%;background:var(--accent);transition:transform .3s;
+  }
+  .toggle-switch.on .toggle-knob{transform:translateX(22px);}
+  .save-badge{
+    font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.05em;
+    background:rgba(0,245,196,0.1);color:var(--accent3);
+    border:1px solid rgba(0,245,196,0.3);padding:.2rem .5rem;border-radius:100px;
+  }
+  .pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:1000px;margin:0 auto;}
+  .pricing-card{
+    background:rgba(255,255,255,0.02);border:1px solid var(--border);
+    border-radius:20px;padding:2.5rem;transition:all .3s;position:relative;overflow:hidden;
+  }
+  .pricing-card.featured{
+    background:linear-gradient(135deg,rgba(59,139,255,0.12),rgba(59,139,255,0.04));
+    border-color:rgba(59,139,255,0.4);
+  }
+  .pricing-card.featured::after{
+    content:'POPULAR';position:absolute;top:1.5rem;right:1.5rem;
+    font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;
+    background:var(--accent);color:#fff;padding:.3rem .7rem;border-radius:100px;
+  }
+  .plan-name{font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+  .plan-price{
+    font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;
+    display:flex;align-items:flex-start;gap:.2rem;margin-bottom:.3rem;
+  }
+  .plan-price sup{font-size:1.2rem;margin-top:.5rem;color:var(--accent);}
+  .plan-period{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;}
+  .plan-features{list-style:none;display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem;}
+  .plan-features li{
+    display:flex;align-items:center;gap:.75rem;
+    font-size:.9rem;color:var(--muted);
+  }
+  .plan-features li::before{content:'→';color:var(--accent3);font-family:'Space Mono',monospace;}
+  .plan-features li.included{color:var(--text);}
+  .btn-plan{
+    width:100%;padding:.9rem;border-radius:10px;text-align:center;
+    font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.1em;
+    text-transform:uppercase;cursor:none;transition:all .3s;border:1px solid var(--border);
+    background:transparent;color:var(--text);text-decoration:none;display:block;
+  }
+  .btn-plan:hover{background:rgba(255,255,255,0.05);}
+  .btn-plan.featured{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn-plan.featured:hover{background:#2a7aee;box-shadow:0 8px 30px var(--glow);}
+
+  /* MARQUEE */
+  .marquee-section{
+    padding:2.5rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+    overflow:hidden;background:var(--surface);
+  }
+  .marquee-track{display:flex;gap:3rem;animation:marquee 25s linear infinite;width:max-content;}
+  @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}  }
+  .marquee-item{
+    font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);display:flex;align-items:center;gap:1rem;white-space:nowrap;
+  }
+  .marquee-sep{color:var(--accent);font-size:1.2rem;}
+
+  /* HOW IT WORKS */
+  #how{background:var(--surface);}
+  .steps{display:flex;flex-direction:column;gap:0;}
+  .step{
+    display:grid;grid-template-columns:80px 1fr;gap:2rem;
+    padding:2.5rem 0;border-bottom:1px solid var(--border);align-items:start;
+  }
+  .step:last-child{border-bottom:none;}
+  .step-num{
+    font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;
+    color:rgba(59,139,255,0.15);line-height:1;
+  }
+  .step-content h3{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:.5rem;}
+  .step-content p{color:var(--muted);line-height:1.6;font-size:.95rem;}
+  .steps-visual{position:relative;}
+
+  /* TESTIMONIALS */
+  #testimonials{}
+  .testimonials-header{text-align:center;margin-bottom:4rem;}
+  .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;}
+  .testimonial-card{
+    background:rgba(255,255,255,0.02);border:1px solid var(--border);
+    border-radius:16px;padding:2rem;
+  }
+  .testimonial-text{font-size:.95rem;line-height:1.7;color:var(--muted);margin-bottom:1.5rem;font-style:italic;}
+  .testimonial-text::before{content:'"';color:var(--accent);font-size:2rem;font-family:'Syne',sans-serif;display:block;line-height:.5;margin-bottom:.5rem;}
+  .testimonial-author{display:flex;align-items:center;gap:.75rem;}
+  .author-avatar{
+    width:40px;height:40px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;color:#fff;
+  }
+  .author-info{display:flex;flex-direction:column;}
+  .author-name{font-weight:500;font-size:.9rem;}
+  .author-role{font-size:.75rem;color:var(--muted);font-family:'Space Mono',monospace;}
+
+  /* SECURITY DASHBOARD */
+  #dashboard{padding:7rem 3rem;}
+  .dashboard-container{
+    background:rgba(255,255,255,0.02);border:1px solid var(--border);
+    border-radius:24px;padding:2.5rem;position:relative;overflow:hidden;
+  }
+  .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+  .dashboard-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}
+  .status-indicator{display:flex;align-items:center;gap:.5rem;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--accent3);}
+  .status-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);animation:blink 1.5s infinite;}
+  .dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+  .dash-card{
+    background:rgba(255,255,255,0.03);border:1px solid var(--border);
+    border-radius:12px;padding:1.25rem;
+  }
+  .dash-label{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
+  .dash-value{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;}
+  .dash-value.green{color:var(--accent3);}
+  .dash-value.red{color:var(--accent2);}
+  .dash-value.blue{color:var(--accent);}
+  .dash-change{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+  .threat-bar{height:6px;border-radius:100px;background:rgba(255,255,255,0.05);overflow:hidden;margin-top:.5rem;}
+  .threat-fill{height:100%;border-radius:100px;transition:width 1.5s ease;}
+  .fill-green{background:var(--accent3);}
+  .fill-blue{background:var(--accent);}
+  .fill-red{background:var(--accent2);}
+  .dash-log{
+    background:rgba(0,0,0,0.3);border-radius:12px;padding:1.25rem;
+    font-family:'Space Mono',monospace;font-size:.7rem;
+  }
+  .log-entry{display:flex;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--border);color:var(--muted);}
+  .log-entry:last-child{border-bottom:none;}
+  .log-time{color:var(--accent);flex-shrink:0;}
+  .log-status-ok{color:var(--accent3);}
+  .log-status-warn{color:var(--accent2);}
+
+  /* CONTACT */
+  #contact{background:var(--surface);}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+  .contact-form{
+    background:rgba(255,255,255,0.02);border:1px solid var(--border);
+    border-radius:20px;padding:2.5rem;
+  }
+  .form-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:.5rem;}
+  .form-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;}
+  .form-group{margin-bottom:1.25rem;}
+  .form-label{
+    display:block;font-family:'Space Mono',monospace;font-size:.7rem;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;
+  }
+  .form-input,.form-select,.form-textarea{
+    width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);
+    border-radius:10px;padding:.85rem 1rem;color:var(--text);
+    font-family:'DM Sans',sans-serif;font-size:.95rem;transition:border-color .2s;
+    outline:none;cursor:text;
+  }
+  .form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent);}
+  .form-select{cursor:none;}
+  .form-textarea{resize:vertical;min-height:100px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .btn-submit{
+    width:100%;padding:1rem;background:var(--accent);border:none;border-radius:10px;
+    color:#fff;font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.1em;
+    text-transform:uppercase;cursor:none;transition:all .3s;margin-top:.5rem;
+  }
+  .btn-submit:hover{background:#2a7aee;box-shadow:0 8px 30px var(--glow);}
+  .contact-info{display:flex;flex-direction:column;gap:2rem;}
+  .contact-item{display:flex;gap:1rem;align-items:flex-start;}
+  .contact-icon{
+    width:44px;height:44px;border-radius:10px;flex-shrink:0;
+    background:rgba(59,139,255,0.1);border:1px solid rgba(59,139,255,0.2);
+    display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+  }
+  .contact-detail h4{font-weight:500;margin-bottom:.25rem;}
+  .contact-detail p{color:var(--muted);font-size:.9rem;}
+
+  /* AUTH MODAL */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);
+    backdrop-filter:blur(10px);z-index:1000;
+    align-items:center;justify-content:center;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:24px;padding:3rem;width:90%;max-width:440px;
+    position:relative;animation:modalIn .3s ease;
+  }
+  @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+  .modal-close{
+    position:absolute;top:1.5rem;right:1.5rem;
+    background:none;border:1px solid var(--border);border-radius:8px;
+    color:var(--muted);width:32px;height:32px;cursor:none;
+    display:flex;align-items:center;justify-content:center;transition:all .2s;
+  }
+  .modal-close:hover{border-color:var(--accent2);color:var(--accent2);}
+  .modal-logo{
+    font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;letter-spacing:.2em;
+    margin-bottom:2rem;display:flex;align-items:center;gap:.5rem;
+  }
+  .modal-logo span{color:var(--accent);}
+  .modal-tabs{display:flex;gap:0;margin-bottom:2rem;background:rgba(255,255,255,.04);border-radius:10px;padding:.25rem;}
+  .modal-tab{
+    flex:1;padding:.6rem;text-align:center;border-radius:8px;cursor:none;
+    font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);transition:all .2s;border:none;background:none;
+  }
+  .modal-tab.active{background:var(--accent);color:#fff;}
+  .modal-content{display:none;}
+  .modal-content.active{display:block;}
+  .auth-success{display:none;text-align:center;padding:1rem 0;}
+  .auth-success .check{font-size:3rem;margin-bottom:1rem;}
+  .auth-success h3{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:.5rem;}
+  .auth-success p{color:var(--muted);font-size:.9rem;}
+
+  /* FOOTER */
+  footer{
+    background:var(--surface);border-top:1px solid var(--border);
+    padding:4rem 3rem 2rem;
+  }
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+  .footer-brand p{color:var(--muted);font-size:.9rem;line-height:1.6;margin-top:1rem;max-width:280px;}
+  .footer-col h4{
+    font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:1.25rem;
+  }
+  .footer-col a{
+    display:block;color:var(--muted);text-decoration:none;font-size:.9rem;
+    margin-bottom:.6rem;transition:color .2s;
+  }
+  .footer-col a:hover{color:var(--text);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    padding-top:2rem;border-top:1px solid var(--border);
+    font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.05em;color:var(--muted);
+  }
+  .footer-badges{display:flex;gap:.75rem;}
+  .footer-badge{
+    padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border);font-size:.65rem;
+  }
+
+  /* CHECKOUT */
+  .checkout-modal .modal{max-width:520px;}
+  .checkout-plan-display{
+    background:rgba(59,139,255,.08);border:1px solid rgba(59,139,255,.2);
+    border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;
+  }
+  .checkout-plan-name{font-family:'Syne',sans-serif;font-weight:700;}
+  .checkout-plan-price{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--accent);}
+  .card-icons{display:flex;gap:.5rem;margin-top:.5rem;}
+  .card-icon{
+    padding:.2rem .5rem;border-radius:4px;font-size:.65rem;font-family:'Space Mono',monospace;
+    border:1px solid var(--border);color:var(--muted);
+  }
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem;}
+    section,#hero,#dashboard{padding:5rem 1.5rem;}
+    .hero-visual{display:none;}
+    .contact-grid{grid-template-columns:1fr;}
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .dashboard-grid{grid-template-columns:repeat(2,1fr);}
+    .form-row{grid-template-columns:1fr;}
+    nav .nav-links{display:none;}
+  }
+
+  /* SCROLL PROGRESS */
+  #progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent3),var(--accent));z-index:200;transition:width .1s;}
+
+  /* PARALLAX LAYER */
+  .parallax{transform:translateY(0);transition:transform .1s linear;}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="progress"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">
+    <div class="logo-icon"></div>
+    <span>AE<span>GIS</span></span>
+  </div>
+  <div class="nav-links">
+    <div class="nav-dropdown">
+      <a href="#services">Servicios ▾</a>
+      <div class="dropdown-menu">
+        <a href="#services">Detección de Amenazas</a>
+        <a href="#services">Protección de Red</a>
+        <a href="#services">SOC 24/7</a>
+        <a href="#services">Consultoría</a>
+        <a href="#services">Respuesta a Incidentes</a>
+      </div>
+    </div>
+    <a href="#pricing">Planes</a>
+    <div class="nav-dropdown">
+      <a href="#contact">Empresa ▾</a>
+      <div class="dropdown-menu">
+        <a href="#contact">Sobre Nosotros</a>
+        <a href="#contact">Equipo</a>
+        <a href="#testimonials">Clientes</a>
+        <a href="#contact">Blog</a>
+        <a href="#contact">Carreras</a>
+      </div>
+    </div>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#contact">Contacto</a>
+    <a href="#" class="btn-nav" onclick="openModal('auth');return false;">Acceder</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-tag">
+      <span class="tag-dot"></span>
+      Protección Avanzada · IA
+    </div>
+    <h1 class="hero-title">
+      CYBER<br>
+      <span class="line2">GUARDIAN</span>
+    </h1>
+    <p class="hero-sub">Protege tu infraestructura digital con inteligencia artificial de vanguardia. Monitoreo 24/7, respuesta en tiempo real y defensa proactiva contra amenazas emergentes.</p>
+    <div class="hero-actions">
+      <a href="#pricing" class="btn-primary">→ Empezar ahora</a>
+      <a href="#dashboard" class="btn-outline">Ver demo en vivo</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">99.9%</span>
+        <span class="stat-label">Uptime SLA</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">2.3M</span>
+        <span class="stat-label">Amenazas bloqueadas</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">&lt;30s</span>
+        <span class="stat-label">Tiempo de respuesta</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+    <div class="orb-ring"></div>
+    <div class="orb-core"></div>
+    <div class="orb-dot"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marquee">
+    <span class="marquee-item">ISO 27001 Certificado <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">SOC 2 Type II <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">GDPR Compliant <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">NIST Framework <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">PCI DSS <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">Zero Trust Architecture <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">AI-Powered Defense <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">ISO 27001 Certificado <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">SOC 2 Type II <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">GDPR Compliant <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">NIST Framework <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">PCI DSS <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">Zero Trust Architecture <span class="marquee-sep">✦</span></span>
+    <span class="marquee-item">AI-Powered Defense <span class="marquee-sep">✦</span></span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-header reveal">
+    <span class="section-tag">// Servicios</span>
+    <h2 class="section-title">Seguridad sin compromisos</h2>
+    <p class="section-sub">Soluciones integrales diseñadas para proteger cada capa de tu infraestructura digital.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal delay-1">
+      <span class="service-badge badge-hot">Popular</span>
+      <div class="service-icon">🛡️</div>
+      <h3>Detección de Amenazas IA</h3>
+      <p>Algoritmos de machine learning que identifican y neutralizan amenazas antes de que impacten tu sistema.</p>
+    </div>
+    <div class="service-card reveal delay-2">
+      <span class="service-badge badge-new">Nuevo</span>
+      <div class="service-icon">🔐</div>
+      <h3>Zero Trust Network</h3>
+      <p>Arquitectura de confianza cero que verifica cada solicitud independientemente de su origen.</p>
+    </div>
+    <div class="service-card reveal delay-3">
+      <div class="service-icon">📡</div>
+      <h3>SOC 24/7</h3>
+      <p>Centro de operaciones de seguridad con analistas certificados monitoreando tu infraestructura todo el tiempo.</p>
+    </div>
+    <div class="service-card reveal delay-1">
+      <div class="service-icon">⚡</div>
+      <h3>Respuesta a Incidentes</h3>
+      <p>Protocolo de respuesta rápida que contiene y erradica amenazas activas en menos de 30 segundos.</p>
+    </div>
+    <div class="service-card reveal delay-2">
+      <div class="service-icon">🔍</div>
+      <h3>Pentesting & Auditoría</h3>
+      <p>Tests de penetración éticos y auditorías de seguridad exhaustivas para descubrir vulnerabilidades ocultas.</p>
+    </div>
+    <div class="service-card reveal delay-3">
+      <span class="service-badge badge-new">Beta</span>
+      <div class="service-icon">🧠</div>
+      <h3>Threat Intelligence</h3>
+      <p>Inteligencia proactiva sobre amenazas emergentes con feeds globales en tiempo real.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;">
+    <div>
+      <span class="section-tag reveal">// Cómo funciona</span>
+      <h2 class="section-title reveal">Protección en 4 pasos simples</h2>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <h3>Conexión & Análisis</h3>
+            <p>Integramos nuestros sensores con tu infraestructura y realizamos un análisis inicial de vulnerabilidades.</p>
+          </div>
+        </div>
+        <div class="step reveal delay-1">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <h3>Monitoreo Continuo</h3>
+            <p>Nuestra IA analiza millones de eventos por segundo buscando patrones anómalos.</p>
+          </div>
+        </div>
+        <div class="step reveal delay-2">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <h3>Detección y Alerta</h3>
+            <p>Al detectar una amenaza, el sistema genera alertas instantáneas y activa protocolos automáticos.</p>
+          </div>
+        </div>
+        <div class="step reveal delay-3">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <h3>Neutralización</h3>
+            <p>Nuestro equipo SOC responde, contiene y erradica la amenaza mientras documentamos el incidente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <div style="position:relative;padding:2rem;">
+        <div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:20px;padding:2rem;margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:1rem;">
+            <span style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent);">THREAT MAP · LIVE</span>
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--accent3);display:inline-block;animation:blink 1.5s infinite;"></span>
+          </div>
+          <div style="height:180px;background:rgba(59,139,255,.05);border-radius:12px;position:relative;overflow:hidden;border:1px solid var(--border);">
+            <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(59,139,255,.04) 0,rgba(59,139,255,.04) 1px,transparent 1px,transparent 30px),repeating-linear-gradient(90deg,rgba(59,139,255,.04) 0,rgba(59,139,255,.04) 1px,transparent 1px,transparent 40px);"></div>
+            <div id="mapDots"></div>
+          </div>
+          <div style="margin-top:1rem;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);">847 amenazas bloqueadas en la última hora</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div style="background:rgba(0,245,196,.05);border:1px solid rgba(0,245,196,.2);border-radius:12px;padding:1.25rem;">
+            <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.3rem;">ESTADO SISTEMA</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent3);">SEGURO</div>
+          </div>
+          <div style="background:rgba(255,94,58,.05);border:1px solid rgba(255,94,58,.2);border-radius:12px;padding:1.25rem;">
+            <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.3rem;">ALERTAS HOY</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--accent2);" id="alertCount">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="pricing-header reveal">
+    <span class="section-tag">// Planes & Precios</span>
+    <h2 class="section-title">Elige tu nivel de protección</h2>
+    <p class="section-sub">Planes escalables para startups, empresas medianas y corporaciones. Sin contratos de permanencia.</p>
+    <div class="pricing-toggle">
+      <span class="toggle-label">Mensual</span>
+      <div class="toggle-switch" id="billingToggle" onclick="toggleBilling()"><div class="toggle-knob"></div></div>
+      <span class="toggle-label">Anual</span>
+      <span class="save-badge">Ahorra 20%</span>
+    </div>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal delay-1">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price"><sup>$</sup><span class="price-val">49</span></div>
+      <div class="plan-period">/ mes · hasta 10 usuarios</div>
+      <ul class="plan-features">
+        <li class="included">Monitoreo básico 24/7</li>
+        <li class="included">Detección de amenazas IA</li>
+        <li class="included">Alertas en tiempo real</li>
+        <li class="included">Dashboard web</li>
+        <li>SOC dedicado</li>
+        <li>Pentesting trimestral</li>
+      </ul>
+      <a href="#" class="btn-plan" onclick="openCheckout('Starter','49');return false;">Contratar Starter</a>
+    </div>
+    <div class="pricing-card featured reveal delay-2">
+      <div class="plan-name">Professional</div>
+      <div class="plan-price"><sup>$</sup><span class="price-val">149</span></div>
+      <div class="plan-period">/ mes · hasta 100 usuarios</div>
+      <ul class="plan-features">
+        <li class="included">Todo de Starter</li>
+        <li class="included">SOC 24/7 dedicado</li>
+        <li class="included">Zero Trust Network</li>
+        <li class="included">Respuesta a incidentes &lt;30s</li>
+        <li class="included">Pentesting trimestral</li>
+        <li>Threat Intelligence Premium</li>
+      </ul>
+      <a href="#" class="btn-plan featured" onclick="openCheckout('Professional','149');return false;">Contratar Professional</a>
+    </div>
+    <div class="pricing-card reveal delay-3">
+      <div class="plan-name">Enterprise</div>
+      <div class="plan-price"><sup>$</sup><span class="price-val">499</span></div>
+      <div class="plan-period">/ mes · usuarios ilimitados</div>
+      <ul class="plan-features">
+        <li class="included">Todo de Professional</li>
+        <li class="included">Threat Intelligence Premium</li>
+        <li class="included">CISO virtual dedicado</li>
+        <li class="included">Pentesting mensual</li>
+        <li class="included">SLA 99.99% garantizado</li>
+        <li class="included">Integración personalizada</li>
+      </ul>
+      <a href="#" class="btn-plan" onclick="openCheckout('Enterprise','499');return false;">Contratar Enterprise</a>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY DASHBOARD -->
+<section id="dashboard" style="padding:7rem 3rem;">
+  <div style="text-align:center;margin-bottom:3rem;">
+    <span class="section-tag reveal">// Dashboard</span>
+    <h2 class="section-title reveal">Panel de control en tiempo real</h2>
+  </div>
+  <div class="dashboard-container reveal">
+    <div class="dashboard-header">
+      <div class="dashboard-title">Centro de Operaciones de Seguridad</div>
+      <div class="status-indicator"><span class="status-dot"></span>SISTEMA ACTIVO · <span id="liveTime"></span></div>
+    </div>
+    <div class="dashboard-grid">
+      <div class="dash-card">
+        <div class="dash-label">Amenazas Bloqueadas</div>
+        <div class="dash-value green" id="threatsBlocked">0</div>
+        <div class="dash-change">↑ 12% vs ayer</div>
+        <div class="threat-bar"><div class="threat-fill fill-green" id="bar1" style="width:0%"></div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Eventos Analizados</div>
+        <div class="dash-value blue" id="eventsAnalyzed">0</div>
+        <div class="dash-change">Millones / hora</div>
+        <div class="threat-bar"><div class="threat-fill fill-blue" id="bar2" style="width:0%"></div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Alertas Activas</div>
+        <div class="dash-value red" id="activeAlerts">0</div>
+        <div class="dash-change">↓ 3 desde ayer</div>
+        <div class="threat-bar"><div class="threat-fill fill-red" id="bar3" style="width:0%"></div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-label">Nivel de Seguridad</div>
+        <div class="dash-value green">98.7%</div>
+        <div class="dash-change">Excelente</div>
+        <div class="threat-bar"><div class="threat-fill fill-green" id="bar4" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="dash-log" id="liveLog">
+      <div class="log-entry"><span class="log-time">--:--:--</span><span>Inicializando sistema...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" style="background:var(--surface);">
+  <div class="testimonials-header reveal">
+    <span class="section-tag">// Testimonios</span>
+    <h2 class="section-title">Lo que dicen nuestros clientes</h2>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal delay-1">
+      <div class="testimonial-text">AEGIS transformó nuestra postura de seguridad. Detectaron y bloquearon un ataque de ransomware sofisticado que hubiera costado millones.</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">MR</div>
+        <div class="author-info">
+          <span class="author-name">Miguel Rodríguez</span>
+          <span class="author-role">CTO · FinTech México</span>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal delay-2">
+      <div class="testimonial-text">El dashboard en tiempo real nos da visibilidad total. Nuestro equipo de TI confía en AEGIS como su capa de defensa principal.</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">AL</div>
+        <div class="author-info">
+          <span class="author-name">Ana López</span>
+          <span class="author-role">CISO · Retail Corp</span>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal delay-3">
+      <div class="testimonial-text">La respuesta ante incidentes es increíblemente rápida. En menos de un minuto teníamos todo contenido y un reporte detallado del ataque.</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">JC</div>
+        <div class="author-info">
+          <span class="author-name">Jorge Castro</span>
+          <span class="author-role">CEO · SaaS Startup</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div>
+      <span class="section-tag reveal">// Contacto</span>
+      <h2 class="section-title reveal">Hablemos de tu seguridad</h2>
+      <p class="section-sub reveal">Nuestro equipo de expertos está listo para evaluar tu infraestructura y diseñar una estrategia personalizada.</p>
+      <div class="contact-info" style="margin-top:2.5rem;">
+        <div class="contact-item reveal delay-1">
+          <div class="contact-icon">📧</div>
+          <div class="contact-detail">
+            <h4>Email</h4>
+            <p>seguridad@aegis.mx</p>
+          </div>
+        </div>
+        <div class="contact-item reveal delay-2">
+          <div class="contact-icon">📞</div>
+          <div class="contact-detail">
+            <h4>Teléfono</h4>
+            <p>+52 (55) 8000-2024 · 24/7</p>
+          </div>
+        </div>
+        <div class="contact-item reveal delay-3">
+          <div class="contact-icon">📍</div>
+          <div class="contact-detail">
+            <h4>Oficinas</h4>
+            <p>Ciudad de México · Monterrey · Guadalajara</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal-right">
+      <div class="form-title">Solicitar consulta gratuita</div>
+      <div class="form-sub">Respuesta garantizada en menos de 2 horas</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-input" type="text" placeholder="Tu nombre" id="contactName">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Empresa</label>
+          <input class="form-input" type="text" placeholder="Empresa" id="contactCompany">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="correo@empresa.com" id="contactEmail">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Servicio de interés</label>
+        <select class="form-select form-input" id="contactService">
+          <option value="">Selecciona un servicio</option>
+          <option>Detección de Amenazas IA</option>
+          <option>Zero Trust Network</option>
+          <option>SOC 24/7</option>
+          <option>Pentesting & Auditoría</option>
+          <option>Plan Enterprise personalizado</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mensaje</label>
+        <textarea class="form-textarea" placeholder="Cuéntanos sobre tu infraestructura y necesidades..." id="contactMsg"></textarea>
+      </div>
+      <button class="btn-submit" onclick="submitContact()">Enviar solicitud →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom:0;">
+        <div class="logo-icon"></div>
+        <span>AE<span style="color:var(--accent);">GIS</span></span>
+      </div>
+      <p>Ciberseguridad de próxima generación impulsada por inteligencia artificial. Protegiendo el futuro digital de México y Latinoamérica.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Servicios</h4>
+      <a href="#">Detección IA</a>
+      <a href="#">Zero Trust</a>
+      <a href="#">SOC 24/7</a>
+      <a href="#">Pentesting</a>
+      <a href="#">Consultoría</a>
+    </div>
+    <div class="footer-col">
+      <h4>Empresa</h4>
+      <a href="#">Sobre Nosotros</a>
+      <a href="#">Equipo</a>
+      <a href="#">Blog</a>
+      <a href="#">Carreras</a>
+      <a href="#">Partners</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+      <a href="#">Cookies</a>
+      <a href="#">Cumplimiento</a>
+      <a href="#">SLA</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 AEGIS Cybersecurity. Todos los derechos reservados.</span>
+    <div class="footer-badges">
+      <span class="footer-badge">ISO 27001</span>
+      <span class="footer-badge">SOC 2</span>
+      <span class="footer-badge">GDPR</span>
+    </div>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('auth')">✕</button>
+    <div class="modal-logo"><div class="logo-icon" style="width:20px;height:20px;"></div>AE<span style="color:var(--accent);">GIS</span></div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab('login')">Iniciar sesión</button>
+      <button class="modal-tab" onclick="switchTab('register')">Registrarse</button>
+    </div>
+    <div id="loginContent" class="modal-content active">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" placeholder="correo@empresa.com" id="loginEmail">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" placeholder="••••••••" id="loginPass">
+      </div>
+      <button class="btn-submit" onclick="handleLogin()">Iniciar sesión →</button>
+      <p style="text-align:center;margin-top:1rem;font-size:.8rem;color:var(--muted);">¿Olvidaste tu contraseña? <a href="#" style="color:var(--accent);text-decoration:none;">Recuperar</a></p>
+    </div>
+    <div id="registerContent" class="modal-content">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre</label>
+          <input class="form-input" type="text" placeholder="Nombre" id="regName">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Apellido</label>
+          <input class="form-input" type="text" placeholder="Apellido" id="regLast">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email corporativo</label>
+        <input class="form-input" type="email" placeholder="correo@empresa.com" id="regEmail">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Empresa</label>
+        <input class="form-input" type="text" placeholder="Nombre de la empresa" id="regCompany">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" placeholder="Mínimo 8 caracteres" id="regPass">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Plan</label>
+        <select class="form-select form-input" id="regPlan">
+          <option>Starter — $49/mes</option>
+          <option>Professional — $149/mes</option>
+          <option>Enterprise — $499/mes</option>
+        </select>
+      </div>
+      <button class="btn-submit" onclick="handleRegister()">Crear cuenta →</button>
+    </div>
+    <div class="auth-success" id="authSuccess">
+      <div class="check">✅</div>
+      <h3 id="successTitle">¡Bienvenido!</h3>
+      <p id="successMsg">Tu cuenta ha sido creada exitosamente.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div class="modal-overlay checkout-modal" id="checkoutModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('checkout')">✕</button>
+    <div class="modal-logo"><div class="logo-icon" style="width:20px;height:20px;"></div>AE<span style="color:var(--accent);">GIS</span> <span style="font-size:.8rem;color:var(--muted);font-family:'Space Mono',monospace;">· Checkout</span></div>
+    <div class="checkout-plan-display">
+      <div>
+        <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.3rem;">PLAN SELECCIONADO</div>
+        <div class="checkout-plan-name" id="checkoutPlanName">Professional</div>
+      </div>
+      <div class="checkout-plan-price">$<span id="checkoutPlanPrice">149</span><span style="font-size:.9rem;color:var(--muted)">/mes</span></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" type="email" placeholder="correo@empresa.com" id="checkoutEmail">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Número de tarjeta</label>
+      <input class="form-input" type="text" placeholder="4242 4242 4242 4242" id="checkoutCard" maxlength="19" oninput="formatCard(this)">
+      <div class="card-icons">
+        <span class="card-icon">VISA</span>
+        <span class="card-icon">MC</span>
+        <span class="card-icon">AMEX</span>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Vencimiento</label>
+        <input class="form-input" type="text" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)" id="checkoutExp">
+      </div>
+      <div class="form-group">
+        <label class="form-label">CVV</label>
+        <input class="form-input" type="text" placeholder="•••" maxlength="4" id="checkoutCVV">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Nombre en tarjeta</label>
+      <input class="form-input" type="text" placeholder="NOMBRE APELLIDO" id="checkoutName">
+    </div>
+    <button class="btn-submit" onclick="processPayment()" id="payBtn">🔒 Pagar de forma segura →</button>
+    <p style="text-align:center;margin-top:.75rem;font-size:.75rem;color:var(--muted);font-family:'Space Mono',monospace;">Cifrado SSL 256-bit · Cancela en cualquier momento</p>
+    <div class="auth-success" id="paySuccess" style="display:none;">
+      <div class="check">🔐</div>
+      <h3>¡Pago procesado!</h3>
+      <p>Tu suscripción está activa. Recibirás un email con tus credenciales de acceso.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// USER DATABASE (localStorage simulation)
+const DB = {
+  users: JSON.parse(localStorage.getItem('aegis_users') || '[]'),
+  contacts: JSON.parse(localStorage.getItem('aegis_contacts') || '[]'),
+  save() {
+    localStorage.setItem('aegis_users', JSON.stringify(this.users));
+    localStorage.setItem('aegis_contacts', JSON.stringify(this.contacts));
+  }
+};
+
+// CURSOR
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx - 6 + 'px';
+  cursor.style.top = my - 6 + 'px';
+});
+function animRing() {
+  rx += (mx - rx - 20) * .12;
+  ry += (my - ry - 20) * .12;
+  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.service-card,.pricing-card,.toggle-switch').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform='scale(2)'; ring.style.opacity='0.5'; });
+  el.addEventListener('mouseleave', () => { cursor.style.transform='scale(1)'; ring.style.opacity='1'; });
+});
+
+// SCROLL PROGRESS
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+});
+
+// SCROLL REVEAL
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el => observer.observe(el));
+
+// COUNTERS ANIMATION
+function animateCounter(id, target, duration=2000, suffix='') {
+  const el = document.getElementById(id);
+  if(!el) return;
+  let start = 0, step = target / (duration/16);
+  const t = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = Math.floor(start).toLocaleString() + suffix;
+    if(start >= target) clearInterval(t);
+  }, 16);
+}
+
+const dashObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      animateCounter('threatsBlocked', 2347);
+      animateCounter('eventsAnalyzed', 18.4, 1500);
+      animateCounter('activeAlerts', 3);
+      animateCounter('alertCount', 847);
+      setTimeout(() => {
+        document.getElementById('bar1').style.width = '82%';
+        document.getElementById('bar2').style.width = '95%';
+        document.getElementById('bar3').style.width = '15%';
+        document.getElementById('bar4').style.width = '98.7%';
+      }, 200);
+      dashObserver.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+const dashEl = document.querySelector('.dashboard-container');
+if(dashEl) dashObserver.observe(dashEl);
+
+// LIVE TIME + LOG
+const logMessages = [
+  ['log-status-ok', 'Escaneo de red completado — Sin anomalías detectadas'],
+  ['log-status-ok', 'Firewall actualizado — Regla #4829 aplicada'],
+  ['log-status-warn', 'Intento de acceso sospechoso bloqueado — IP: 185.234.xx.xx'],
+  ['log-status-ok', 'Certificado SSL renovado — vigente hasta 2027'],
+  ['log-status-warn', 'Fuerza bruta detectada y mitigada — 3,200 intentos/min'],
+  ['log-status-ok', 'Backup de configuración completado'],
+  ['log-status-ok', 'DDoS mitigation activa — Tráfico normal restaurado'],
+  ['log-status-warn', 'Anomalía en tráfico SMTP — Cuarentena aplicada'],
+];
+let logIdx = 0;
+function updateLog() {
+  const now = new Date();
+  const time = now.toTimeString().split(' ')[0];
+  document.getElementById('liveTime').textContent = time;
+  const logEl = document.getElementById('liveLog');
+  const msg = logMessages[logIdx % logMessages.length];
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${time}</span><span class="${msg[0]}">${msg[1]}</span>`;
+  logEl.insertBefore(entry, logEl.firstChild);
+  if(logEl.children.length > 6) logEl.removeChild(logEl.lastChild);
+  logIdx++;
+}
+setInterval(updateLog, 3500);
+updateLog();
+
+// MAP DOTS ANIMATION
+const mapEl = document.getElementById('mapDots');
+if(mapEl) {
+  setInterval(() => {
+    const dot = document.createElement('div');
+    dot.style.cssText = `position:absolute;width:6px;height:6px;border-radius:50%;background:var(--accent2);box-shadow:0 0 8px var(--accent2);left:${Math.random()*90+5}%;top:${Math.random()*80+5}%;animation:blink ${Math.random()*2+1}s ease-out forwards;`;
+    mapEl.appendChild(dot);
+    setTimeout(() => dot.remove(), 3000);
+  }, 400);
+}
+
+// BILLING TOGGLE
+let isAnnual = false;
+const prices = { Starter: [49, 39], Professional: [149, 119], Enterprise: [499, 399] };
+function toggleBilling() {
+  isAnnual = !isAnnual;
+  document.getElementById('billingToggle').classList.toggle('on', isAnnual);
+  document.querySelectorAll('.price-val').forEach((el, i) => {
+    const plan = ['Starter','Professional','Enterprise'][i];
+    el.textContent = isAnnual ? prices[plan][1] : prices[plan][0];
+  });
+}
+
+// AUTH MODAL
+function openModal(type) {
+  document.getElementById(type + 'Modal').classList.add('active');
+}
+function closeModal(type) {
+  document.getElementById(type + 'Modal').classList.remove('active');
+  document.getElementById('authSuccess').style.display = 'none';
+  if(type === 'checkout') {
+    document.getElementById('paySuccess').style.display = 'none';
+    document.getElementById('payBtn').style.display = 'block';
+  }
+}
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if(e.target === el) el.classList.remove('active'); });
+});
+
+function switchTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login' ? i===0 : i===1)));
+  document.getElementById('loginContent').classList.toggle('active', tab==='login');
+  document.getElementById('registerContent').classList.toggle('active', tab==='register');
+}
+
+function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  if(!email || !pass) { alert('Por favor completa todos los campos'); return; }
+  const user = DB.users.find(u => u.email === email && u.password === pass);
+  if(!user) { alert('Credenciales incorrectas. ¿Aún no tienes cuenta?'); return; }
+  document.getElementById('loginContent').style.display = 'none';
+  document.getElementById('authSuccess').style.display = 'block';
+  document.getElementById('successTitle').textContent = `¡Bienvenido, ${user.name}!`;
+  document.getElementById('successMsg').textContent = `Sesión iniciada con ${email}`;
+}
+
+function handleRegister() {
+  const name = document.getElementById('regName').value;
+  const last = document.getElementById('regLast').value;
+  const email = document.getElementById('regEmail').value;
+  const company = document.getElementById('regCompany').value;
+  const pass = document.getElementById('regPass').value;
+  const plan = document.getElementById('regPlan').value;
+  if(!name || !email || !pass || !company) { alert('Por favor completa todos los campos'); return; }
+  if(pass.length < 8) { alert('La contraseña debe tener al menos 8 caracteres'); return; }
+  if(DB.users.find(u => u.email === email)) { alert('Este email ya está registrado'); return; }
+  DB.users.push({ name, last, email, company, password: pass, plan, createdAt: new Date().toISOString() });
+  DB.save();
+  document.getElementById('registerContent').style.display = 'none';
+  document.getElementById('authSuccess').style.display = 'block';
+  document.getElementById('successTitle').textContent = `¡Cuenta creada!`;
+  document.getElementById('successMsg').textContent = `Bienvenido ${name}. Tu plan ${plan} está activo.`;
+}
+
+// CHECKOUT
+function openCheckout(plan, price) {
+  document.getElementById('checkoutPlanName').textContent = plan;
+  document.getElementById('checkoutPlanPrice').textContent = isAnnual ? prices[plan][1] : price;
+  document.getElementById('paySuccess').style.display = 'none';
+  document.getElementById('payBtn').style.display = 'block';
+  document.getElementById('checkoutModal').classList.add('active');
+}
+
+function formatCard(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,16);
+  el.value = v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g,'').substring(0,4);
+  if(v.length > 2) v = v.substring(0,2) + '/' + v.substring(2);
+  el.value = v;
+}
+
+function processPayment() {
+  const email = document.getElementById('checkoutEmail').value;
+  const card = document.getElementById('checkoutCard').value;
+  const exp = document.getElementById('checkoutExp').value;
+  const cvv = document.getElementById('checkoutCVV').value;
+  const name = document.getElementById('checkoutName').value;
+  if(!email || !card || !exp || !cvv || !name) { alert('Por favor completa todos los campos de pago'); return; }
+  const btn = document.getElementById('payBtn');
+  btn.textContent = '⏳ Procesando...';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('paySuccess').style.display = 'block';
+    const plan = document.getElementById('checkoutPlanName').textContent;
+    DB.users.push({ email, name, plan, paymentAt: new Date().toISOString(), type: 'checkout' });
+    DB.save();
+  }, 2000);
+}
+
+// CONTACT FORM
+function submitContact() {
+  const name = document.getElementById('contactName').value;
+  const email = document.getElementById('contactEmail').value;
+  const company = document.getElementById('contactCompany').value;
+  const service = document.getElementById('contactService').value;
+  const msg = document.getElementById('contactMsg').value;
+  if(!name || !email) { alert('Por favor completa tu nombre y email'); return; }
+  DB.contacts.push({ name, email, company, service, msg, submittedAt: new Date().toISOString() });
+  DB.save();
+  const btn = event.target;
+  btn.textContent = '✅ Mensaje enviado — Te contactamos en menos de 2 horas';
+  btn.style.background = 'rgba(0,245,196,0.15)';
+  btn.style.border = '1px solid var(--accent3)';
+  btn.style.color = 'var(--accent3)';
+  ['contactName','contactEmail','contactCompany','contactMsg'].forEach(id => document.getElementById(id).value = '');
+  setTimeout(() => {
+    btn.textContent = 'Enviar solicitud →';
+    btn.style.cssText = '';
+  }, 5000);
+}
+
+// NAV SCROLL EFFECT
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').style.boxShadow = window.scrollY > 50 ? '0 4px 30px rgba(0,0,0,.5)' : '';
+});
+</script>
+</body>
+</html>
