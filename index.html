@@ -1130,17 +1130,96 @@
     </div>
   </div>
 </div>
-
 <script>
-// USER DATABASE (localStorage simulation)
-const DB = {
-  users: JSON.parse(localStorage.getItem('aegis_users') || '[]'),
-  contacts: JSON.parse(localStorage.getItem('aegis_contacts') || '[]'),
-  save() {
-    localStorage.setItem('aegis_users', JSON.stringify(this.users));
-    localStorage.setItem('aegis_contacts', JSON.stringify(this.contacts));
-  }
-};
+const API = 'http://127.0.0.1:8000';
+
+// LOGIN
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  if(!email || !pass) { alert('Por favor completa todos los campos'); return; }
+  const res = await fetch(`${API}/login`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ email, password: pass })
+  });
+  const data = await res.json();
+  if(!res.ok) { alert(data.detail); return; }
+  document.getElementById('loginContent').style.display = 'none';
+  document.getElementById('authSuccess').style.display = 'block';
+  document.getElementById('successTitle').textContent = `¡Bienvenido, ${data.name}!`;
+  document.getElementById('successMsg').textContent = `Sesión iniciada con ${email}`;
+}
+
+// REGISTRO
+async function handleRegister() {
+  const name = document.getElementById('regName').value;
+  const last = document.getElementById('regLast').value;
+  const email = document.getElementById('regEmail').value;
+  const company = document.getElementById('regCompany').value;
+  const pass = document.getElementById('regPass').value;
+  const plan = document.getElementById('regPlan').value;
+  if(!name || !email || !pass || !company) { alert('Por favor completa todos los campos'); return; }
+  if(pass.length < 8) { alert('La contraseña debe tener al menos 8 caracteres'); return; }
+  const res = await fetch(`${API}/register`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ name, last_name: last, email, company, password: pass, plan })
+  });
+  const data = await res.json();
+  if(!res.ok) { alert(data.detail); return; }
+  document.getElementById('registerContent').style.display = 'none';
+  document.getElementById('authSuccess').style.display = 'block';
+  document.getElementById('successTitle').textContent = `¡Cuenta creada!`;
+  document.getElementById('successMsg').textContent = `Bienvenido ${name}. Tu plan ${plan} está activo.`;
+}
+
+// CONTACTO
+async function submitContact() {
+  const name = document.getElementById('contactName').value;
+  const email = document.getElementById('contactEmail').value;
+  const company = document.getElementById('contactCompany').value;
+  const service = document.getElementById('contactService').value;
+  const msg = document.getElementById('contactMsg').value;
+  if(!name || !email) { alert('Por favor completa tu nombre y email'); return; }
+  const res = await fetch(`${API}/contact`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ name, email, company, service, message: msg })
+  });
+  const data = await res.json();
+  if(!res.ok) { alert('Error al enviar mensaje'); return; }
+  const btn = event.target;
+  btn.textContent = '✅ Mensaje enviado — Te contactamos en menos de 2 horas';
+  btn.style.background = 'rgba(0,245,196,0.15)';
+  btn.style.border = '1px solid var(--accent3)';
+  btn.style.color = 'var(--accent3)';
+  ['contactName','contactEmail','contactCompany','contactMsg'].forEach(id => document.getElementById(id).value = '');
+  setTimeout(() => { btn.textContent = 'Enviar solicitud →'; btn.style.cssText = ''; }, 5000);
+}
+
+// PAGO
+async function processPayment() {
+  const email = document.getElementById('checkoutEmail').value;
+  const card = document.getElementById('checkoutCard').value;
+  const exp = document.getElementById('checkoutExp').value;
+  const cvv = document.getElementById('checkoutCVV').value;
+  const name = document.getElementById('checkoutName').value;
+  const plan = document.getElementById('checkoutPlanName').textContent;
+  const amount = parseInt(document.getElementById('checkoutPlanPrice').textContent);
+  if(!email || !card || !exp || !cvv || !name) { alert('Por favor completa todos los campos de pago'); return; }
+  const btn = document.getElementById('payBtn');
+  btn.textContent = '⏳ Procesando...';
+  btn.disabled = true;
+  const res = await fetch(`${API}/checkout`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ email, plan, amount })
+  });
+  const data = await res.json();
+  btn.style.display = 'none';
+  document.getElementById('paySuccess').style.display = 'block';
+}
 
 // CURSOR
 const cursor = document.getElementById('cursor');
@@ -1235,7 +1314,7 @@ function updateLog() {
 setInterval(updateLog, 3500);
 updateLog();
 
-// MAP DOTS ANIMATION
+// MAP DOTS
 const mapEl = document.getElementById('mapDots');
 if(mapEl) {
   setInterval(() => {
@@ -1258,7 +1337,7 @@ function toggleBilling() {
   });
 }
 
-// AUTH MODAL
+// MODALES
 function openModal(type) {
   document.getElementById(type + 'Modal').classList.add('active');
 }
@@ -1280,36 +1359,6 @@ function switchTab(tab) {
   document.getElementById('registerContent').classList.toggle('active', tab==='register');
 }
 
-function handleLogin() {
-  const email = document.getElementById('loginEmail').value;
-  const pass = document.getElementById('loginPass').value;
-  if(!email || !pass) { alert('Por favor completa todos los campos'); return; }
-  const user = DB.users.find(u => u.email === email && u.password === pass);
-  if(!user) { alert('Credenciales incorrectas. ¿Aún no tienes cuenta?'); return; }
-  document.getElementById('loginContent').style.display = 'none';
-  document.getElementById('authSuccess').style.display = 'block';
-  document.getElementById('successTitle').textContent = `¡Bienvenido, ${user.name}!`;
-  document.getElementById('successMsg').textContent = `Sesión iniciada con ${email}`;
-}
-
-function handleRegister() {
-  const name = document.getElementById('regName').value;
-  const last = document.getElementById('regLast').value;
-  const email = document.getElementById('regEmail').value;
-  const company = document.getElementById('regCompany').value;
-  const pass = document.getElementById('regPass').value;
-  const plan = document.getElementById('regPlan').value;
-  if(!name || !email || !pass || !company) { alert('Por favor completa todos los campos'); return; }
-  if(pass.length < 8) { alert('La contraseña debe tener al menos 8 caracteres'); return; }
-  if(DB.users.find(u => u.email === email)) { alert('Este email ya está registrado'); return; }
-  DB.users.push({ name, last, email, company, password: pass, plan, createdAt: new Date().toISOString() });
-  DB.save();
-  document.getElementById('registerContent').style.display = 'none';
-  document.getElementById('authSuccess').style.display = 'block';
-  document.getElementById('successTitle').textContent = `¡Cuenta creada!`;
-  document.getElementById('successMsg').textContent = `Bienvenido ${name}. Tu plan ${plan} está activo.`;
-}
-
 // CHECKOUT
 function openCheckout(plan, price) {
   document.getElementById('checkoutPlanName').textContent = plan;
@@ -1329,48 +1378,7 @@ function formatExpiry(el) {
   el.value = v;
 }
 
-function processPayment() {
-  const email = document.getElementById('checkoutEmail').value;
-  const card = document.getElementById('checkoutCard').value;
-  const exp = document.getElementById('checkoutExp').value;
-  const cvv = document.getElementById('checkoutCVV').value;
-  const name = document.getElementById('checkoutName').value;
-  if(!email || !card || !exp || !cvv || !name) { alert('Por favor completa todos los campos de pago'); return; }
-  const btn = document.getElementById('payBtn');
-  btn.textContent = '⏳ Procesando...';
-  btn.disabled = true;
-  setTimeout(() => {
-    btn.style.display = 'none';
-    document.getElementById('paySuccess').style.display = 'block';
-    const plan = document.getElementById('checkoutPlanName').textContent;
-    DB.users.push({ email, name, plan, paymentAt: new Date().toISOString(), type: 'checkout' });
-    DB.save();
-  }, 2000);
-}
-
-// CONTACT FORM
-function submitContact() {
-  const name = document.getElementById('contactName').value;
-  const email = document.getElementById('contactEmail').value;
-  const company = document.getElementById('contactCompany').value;
-  const service = document.getElementById('contactService').value;
-  const msg = document.getElementById('contactMsg').value;
-  if(!name || !email) { alert('Por favor completa tu nombre y email'); return; }
-  DB.contacts.push({ name, email, company, service, msg, submittedAt: new Date().toISOString() });
-  DB.save();
-  const btn = event.target;
-  btn.textContent = '✅ Mensaje enviado — Te contactamos en menos de 2 horas';
-  btn.style.background = 'rgba(0,245,196,0.15)';
-  btn.style.border = '1px solid var(--accent3)';
-  btn.style.color = 'var(--accent3)';
-  ['contactName','contactEmail','contactCompany','contactMsg'].forEach(id => document.getElementById(id).value = '');
-  setTimeout(() => {
-    btn.textContent = 'Enviar solicitud →';
-    btn.style.cssText = '';
-  }, 5000);
-}
-
-// NAV SCROLL EFFECT
+// NAV SCROLL
 window.addEventListener('scroll', () => {
   document.getElementById('mainNav').style.boxShadow = window.scrollY > 50 ? '0 4px 30px rgba(0,0,0,.5)' : '';
 });
