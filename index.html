@@ -27,7 +27,7 @@
     cursor:none;
   }
 
-  /* CUSTOM CURSOR */
+  /* CUSTOM CURSOR — oculto en móvil */
   #cursor{
     position:fixed;width:12px;height:12px;border-radius:50%;
     background:var(--accent);pointer-events:none;z-index:9999;
@@ -93,10 +93,53 @@
   .btn-nav{
     background:var(--accent);color:#fff;border:none;
     padding:.6rem 1.4rem;border-radius:8px;font-family:'Space Mono',monospace;
-    font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;cursor:none;
+    font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
     transition:all .2s;text-decoration:none;
   }
   .btn-nav:hover{background:#2a7aee;box-shadow:0 0 20px var(--glow);}
+
+  /* PERFIL EN NAV */
+  .nav-user{
+    display:none;align-items:center;gap:.75rem;
+    font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent3);
+  }
+  .nav-user.visible{display:flex;}
+  .nav-avatar{
+    width:32px;height:32px;border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Syne',sans-serif;font-weight:700;font-size:.8rem;color:#fff;
+  }
+  .nav-user-name{color:var(--text);font-size:.75rem;}
+  .btn-logout{
+    background:transparent;border:1px solid var(--border);color:var(--muted);
+    padding:.4rem .8rem;border-radius:6px;font-family:'Space Mono',monospace;
+    font-size:.65rem;cursor:pointer;transition:all .2s;
+  }
+  .btn-logout:hover{border-color:var(--accent2);color:var(--accent2);}
+
+  /* HAMBURGER MÓVIL */
+  .nav-hamburger{
+    display:none;flex-direction:column;gap:5px;cursor:pointer;
+    background:none;border:none;padding:.5rem;
+  }
+  .nav-hamburger span{
+    display:block;width:24px;height:2px;
+    background:var(--text);border-radius:2px;transition:all .3s;
+  }
+  .nav-mobile-menu{
+    display:none;position:fixed;top:64px;left:0;right:0;
+    background:rgba(8,12,20,0.98);backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);padding:1.5rem;
+    flex-direction:column;gap:1rem;z-index:99;
+  }
+  .nav-mobile-menu.open{display:flex;}
+  .nav-mobile-menu a{
+    font-family:'Space Mono',monospace;font-size:.8rem;color:var(--muted);
+    text-decoration:none;letter-spacing:.1em;text-transform:uppercase;
+    padding:.75rem 0;border-bottom:1px solid var(--border);
+  }
+  .nav-mobile-menu a:last-child{border-bottom:none;}
 
   /* HERO */
   #hero{
@@ -154,18 +197,18 @@
     background:linear-gradient(135deg,var(--accent),#1a6fd4);
     color:#fff;border:none;padding:.9rem 2rem;border-radius:10px;
     font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.1em;
-    text-transform:uppercase;cursor:none;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
+    text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
   }
   .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px var(--glow);}
   .btn-outline{
     background:transparent;color:var(--text);border:1px solid var(--border);
     padding:.9rem 2rem;border-radius:10px;font-family:'Space Mono',monospace;font-size:.8rem;
-    letter-spacing:.1em;text-transform:uppercase;cursor:none;transition:all .3s;text-decoration:none;
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .3s;text-decoration:none;
   }
   .btn-outline:hover{border-color:var(--accent);color:var(--accent);}
   .hero-stats{
     display:flex;gap:3rem;margin-top:4rem;padding-top:2rem;
-    border-top:1px solid var(--border);
+    border-top:1px solid var(--border);flex-wrap:wrap;
   }
   .stat-item{display:flex;flex-direction:column;gap:.3rem;}
   .stat-num{
@@ -234,13 +277,13 @@
   .services-header{text-align:center;margin-bottom:4rem;}
   .services-header .section-sub{margin:0 auto;}
   .services-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;
   }
   .service-card{
     background:rgba(255,255,255,0.02);border:1px solid var(--border);
     border-radius:16px;padding:2rem;
     transition:all .3s;position:relative;overflow:hidden;
-    cursor:none;
+    cursor:default;
   }
   .service-card::before{
     content:'';position:absolute;inset:0;
@@ -256,9 +299,7 @@
     display:flex;align-items:center;justify-content:center;
     font-size:1.4rem;margin-bottom:1.5rem;
   }
-  .service-card h3{
-    font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:.75rem;
-  }
+  .service-card h3{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:.75rem;}
   .service-card p{color:var(--muted);font-size:.9rem;line-height:1.6;}
   .service-badge{
     position:absolute;top:1.5rem;right:1.5rem;
@@ -269,16 +310,13 @@
   .badge-new{background:rgba(0,245,196,0.1);color:var(--accent3);border:1px solid rgba(0,245,196,0.3);}
 
   /* PRICING */
-  #pricing{}
   .pricing-header{text-align:center;margin-bottom:4rem;}
   .pricing-header .section-sub{margin:0 auto;}
-  .pricing-toggle{
-    display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem;
-  }
+  .pricing-toggle{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.5rem;}
   .toggle-label{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);letter-spacing:.1em;}
   .toggle-switch{
     width:48px;height:26px;background:rgba(59,139,255,0.2);border-radius:100px;
-    position:relative;cursor:none;border:1px solid var(--border);transition:background .3s;
+    position:relative;cursor:pointer;border:1px solid var(--border);transition:background .3s;
   }
   .toggle-switch.on{background:rgba(59,139,255,0.4);}
   .toggle-knob{
@@ -306,23 +344,17 @@
     background:var(--accent);color:#fff;padding:.3rem .7rem;border-radius:100px;
   }
   .plan-name{font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
-  .plan-price{
-    font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;
-    display:flex;align-items:flex-start;gap:.2rem;margin-bottom:.3rem;
-  }
+  .plan-price{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;display:flex;align-items:flex-start;gap:.2rem;margin-bottom:.3rem;}
   .plan-price sup{font-size:1.2rem;margin-top:.5rem;color:var(--accent);}
   .plan-period{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;}
   .plan-features{list-style:none;display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem;}
-  .plan-features li{
-    display:flex;align-items:center;gap:.75rem;
-    font-size:.9rem;color:var(--muted);
-  }
+  .plan-features li{display:flex;align-items:center;gap:.75rem;font-size:.9rem;color:var(--muted);}
   .plan-features li::before{content:'→';color:var(--accent3);font-family:'Space Mono',monospace;}
   .plan-features li.included{color:var(--text);}
   .btn-plan{
     width:100%;padding:.9rem;border-radius:10px;text-align:center;
     font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.1em;
-    text-transform:uppercase;cursor:none;transition:all .3s;border:1px solid var(--border);
+    text-transform:uppercase;cursor:pointer;transition:all .3s;border:1px solid var(--border);
     background:transparent;color:var(--text);text-decoration:none;display:block;
   }
   .btn-plan:hover{background:rgba(255,255,255,0.05);}
@@ -335,7 +367,7 @@
     overflow:hidden;background:var(--surface);
   }
   .marquee-track{display:flex;gap:3rem;animation:marquee 25s linear infinite;width:max-content;}
-  @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}  }
+  @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
   .marquee-item{
     font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
     color:var(--muted);display:flex;align-items:center;gap:1rem;white-space:nowrap;
@@ -350,22 +382,15 @@
     padding:2.5rem 0;border-bottom:1px solid var(--border);align-items:start;
   }
   .step:last-child{border-bottom:none;}
-  .step-num{
-    font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;
-    color:rgba(59,139,255,0.15);line-height:1;
-  }
+  .step-num{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;color:rgba(59,139,255,0.15);line-height:1;}
   .step-content h3{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:.5rem;}
   .step-content p{color:var(--muted);line-height:1.6;font-size:.95rem;}
-  .steps-visual{position:relative;}
 
   /* TESTIMONIALS */
   #testimonials{}
   .testimonials-header{text-align:center;margin-bottom:4rem;}
-  .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;}
-  .testimonial-card{
-    background:rgba(255,255,255,0.02);border:1px solid var(--border);
-    border-radius:16px;padding:2rem;
-  }
+  .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;}
+  .testimonial-card{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:16px;padding:2rem;}
   .testimonial-text{font-size:.95rem;line-height:1.7;color:var(--muted);margin-bottom:1.5rem;font-style:italic;}
   .testimonial-text::before{content:'"';color:var(--accent);font-size:2rem;font-family:'Syne',sans-serif;display:block;line-height:.5;margin-bottom:.5rem;}
   .testimonial-author{display:flex;align-items:center;gap:.75rem;}
@@ -385,15 +410,12 @@
     background:rgba(255,255,255,0.02);border:1px solid var(--border);
     border-radius:24px;padding:2.5rem;position:relative;overflow:hidden;
   }
-  .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+  .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
   .dashboard-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;}
   .status-indicator{display:flex;align-items:center;gap:.5rem;font-family:'Space Mono',monospace;font-size:.75rem;color:var(--accent3);}
   .status-dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);animation:blink 1.5s infinite;}
   .dashboard-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
-  .dash-card{
-    background:rgba(255,255,255,0.03);border:1px solid var(--border);
-    border-radius:12px;padding:1.25rem;
-  }
+  .dash-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
   .dash-label{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
   .dash-value{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;}
   .dash-value.green{color:var(--accent3);}
@@ -405,10 +427,7 @@
   .fill-green{background:var(--accent3);}
   .fill-blue{background:var(--accent);}
   .fill-red{background:var(--accent2);}
-  .dash-log{
-    background:rgba(0,0,0,0.3);border-radius:12px;padding:1.25rem;
-    font-family:'Space Mono',monospace;font-size:.7rem;
-  }
+  .dash-log{background:rgba(0,0,0,0.3);border-radius:12px;padding:1.25rem;font-family:'Space Mono',monospace;font-size:.7rem;}
   .log-entry{display:flex;gap:1rem;padding:.4rem 0;border-bottom:1px solid var(--border);color:var(--muted);}
   .log-entry:last-child{border-bottom:none;}
   .log-time{color:var(--accent);flex-shrink:0;}
@@ -418,13 +437,10 @@
   /* CONTACT */
   #contact{background:var(--surface);}
   .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
-  .contact-form{
-    background:rgba(255,255,255,0.02);border:1px solid var(--border);
-    border-radius:20px;padding:2.5rem;
-  }
+  .contact-form{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:20px;padding:2.5rem;}
   .form-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:.5rem;}
   .form-sub{font-size:.85rem;color:var(--muted);margin-bottom:2rem;}
-  .form-group{margin-bottom:1.25rem;}
+  .form-group{margin-bottom:1.25rem;position:relative;}
   .form-label{
     display:block;font-family:'Space Mono',monospace;font-size:.7rem;
     letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;
@@ -436,13 +452,13 @@
     outline:none;cursor:text;
   }
   .form-input:focus,.form-textarea:focus,.form-select:focus{border-color:var(--accent);}
-  .form-select{cursor:none;}
+  .form-select{cursor:pointer;}
   .form-textarea{resize:vertical;min-height:100px;}
   .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
   .btn-submit{
     width:100%;padding:1rem;background:var(--accent);border:none;border-radius:10px;
     color:#fff;font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.1em;
-    text-transform:uppercase;cursor:none;transition:all .3s;margin-top:.5rem;
+    text-transform:uppercase;cursor:pointer;transition:all .3s;margin-top:.5rem;
   }
   .btn-submit:hover{background:#2a7aee;box-shadow:0 8px 30px var(--glow);}
   .contact-info{display:flex;flex-direction:column;gap:2rem;}
@@ -455,23 +471,39 @@
   .contact-detail h4{font-weight:500;margin-bottom:.25rem;}
   .contact-detail p{color:var(--muted);font-size:.9rem;}
 
+  /* PASSWORD TOGGLE */
+  .pass-wrapper{position:relative;}
+  .pass-wrapper .form-input{padding-right:3rem;}
+  .pass-toggle{
+    position:absolute;right:1rem;top:50%;transform:translateY(-50%);
+    background:none;border:none;cursor:pointer;color:var(--muted);font-size:1rem;
+    transition:color .2s;padding:0;
+  }
+  .pass-toggle:hover{color:var(--accent);}
+
+  /* PASSWORD STRENGTH */
+  .pass-strength{margin-top:.5rem;}
+  .pass-strength-bar{height:4px;border-radius:100px;background:rgba(255,255,255,0.05);overflow:hidden;}
+  .pass-strength-fill{height:100%;border-radius:100px;transition:width .3s,background .3s;}
+  .pass-strength-text{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.3rem;}
+
   /* AUTH MODAL */
   .modal-overlay{
     display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);
     backdrop-filter:blur(10px);z-index:1000;
-    align-items:center;justify-content:center;
+    align-items:center;justify-content:center;padding:1rem;
   }
   .modal-overlay.active{display:flex;}
   .modal{
     background:var(--surface);border:1px solid var(--border);
     border-radius:24px;padding:3rem;width:90%;max-width:440px;
-    position:relative;animation:modalIn .3s ease;
+    position:relative;animation:modalIn .3s ease;max-height:90vh;overflow-y:auto;
   }
   @keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
   .modal-close{
     position:absolute;top:1.5rem;right:1.5rem;
     background:none;border:1px solid var(--border);border-radius:8px;
-    color:var(--muted);width:32px;height:32px;cursor:none;
+    color:var(--muted);width:32px;height:32px;cursor:pointer;
     display:flex;align-items:center;justify-content:center;transition:all .2s;
   }
   .modal-close:hover{border-color:var(--accent2);color:var(--accent2);}
@@ -482,7 +514,7 @@
   .modal-logo span{color:var(--accent);}
   .modal-tabs{display:flex;gap:0;margin-bottom:2rem;background:rgba(255,255,255,.04);border-radius:10px;padding:.25rem;}
   .modal-tab{
-    flex:1;padding:.6rem;text-align:center;border-radius:8px;cursor:none;
+    flex:1;padding:.6rem;text-align:center;border-radius:8px;cursor:pointer;
     font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
     color:var(--muted);transition:all .2s;border:none;background:none;
   }
@@ -495,30 +527,37 @@
   .auth-success p{color:var(--muted);font-size:.9rem;}
 
   /* FOOTER */
-  footer{
-    background:var(--surface);border-top:1px solid var(--border);
-    padding:4rem 3rem 2rem;
-  }
+  footer{background:var(--surface);border-top:1px solid var(--border);padding:4rem 3rem 2rem;}
   .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
   .footer-brand p{color:var(--muted);font-size:.9rem;line-height:1.6;margin-top:1rem;max-width:280px;}
   .footer-col h4{
     font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
     color:var(--muted);margin-bottom:1.25rem;
   }
-  .footer-col a{
-    display:block;color:var(--muted);text-decoration:none;font-size:.9rem;
-    margin-bottom:.6rem;transition:color .2s;
-  }
+  .footer-col a{display:block;color:var(--muted);text-decoration:none;font-size:.9rem;margin-bottom:.6rem;transition:color .2s;}
   .footer-col a:hover{color:var(--text);}
   .footer-bottom{
-    display:flex;justify-content:space-between;align-items:center;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
     padding-top:2rem;border-top:1px solid var(--border);
     font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.05em;color:var(--muted);
   }
-  .footer-badges{display:flex;gap:.75rem;}
-  .footer-badge{
-    padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border);font-size:.65rem;
+  .footer-badges{display:flex;gap:.75rem;flex-wrap:wrap;}
+  .footer-badge{padding:.3rem .7rem;border-radius:6px;border:1px solid var(--border);font-size:.65rem;}
+
+  /* FOOTER CONTACTO */
+  .footer-contact-bar{
+    text-align:center;padding:2rem 3rem;
+    border-top:1px solid var(--border);
+    background:rgba(59,139,255,0.03);
   }
+  .footer-contact-bar p{color:var(--muted);font-size:.95rem;margin-bottom:.75rem;}
+  .footer-contact-bar a{
+    color:var(--accent);font-family:'Space Mono',monospace;font-size:.8rem;
+    letter-spacing:.1em;text-decoration:none;text-transform:uppercase;
+    border-bottom:1px solid rgba(59,139,255,0.3);padding-bottom:.2rem;
+    transition:all .2s;
+  }
+  .footer-contact-bar a:hover{color:var(--accent3);border-color:var(--accent3);}
 
   /* CHECKOUT */
   .checkout-modal .modal{max-width:520px;}
@@ -529,28 +568,55 @@
   .checkout-plan-name{font-family:'Syne',sans-serif;font-weight:700;}
   .checkout-plan-price{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem;color:var(--accent);}
   .card-icons{display:flex;gap:.5rem;margin-top:.5rem;}
-  .card-icon{
-    padding:.2rem .5rem;border-radius:4px;font-size:.65rem;font-family:'Space Mono',monospace;
-    border:1px solid var(--border);color:var(--muted);
-  }
-
-  /* RESPONSIVE */
-  @media(max-width:768px){
-    nav{padding:1rem 1.5rem;}
-    section,#hero,#dashboard{padding:5rem 1.5rem;}
-    .hero-visual{display:none;}
-    .contact-grid{grid-template-columns:1fr;}
-    .footer-grid{grid-template-columns:1fr 1fr;}
-    .dashboard-grid{grid-template-columns:repeat(2,1fr);}
-    .form-row{grid-template-columns:1fr;}
-    nav .nav-links{display:none;}
-  }
+  .card-icon{padding:.2rem .5rem;border-radius:4px;font-size:.65rem;font-family:'Space Mono',monospace;border:1px solid var(--border);color:var(--muted);}
 
   /* SCROLL PROGRESS */
   #progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent3),var(--accent));z-index:200;transition:width .1s;}
 
-  /* PARALLAX LAYER */
-  .parallax{transform:translateY(0);transition:transform .1s linear;}
+  /* ===== RESPONSIVE MÓVIL ===== */
+  @media(max-width:768px){
+    body{cursor:auto;}
+    #cursor,#cursor-ring{display:none;}
+
+    nav{padding:1rem 1.5rem;}
+    .nav-links{display:none;}
+    .nav-hamburger{display:flex;}
+
+    #hero{padding:6rem 1.5rem 3rem;}
+    .hero-visual{display:none;}
+    .hero-stats{gap:1.5rem;}
+    .stat-num{font-size:1.6rem;}
+
+    section,#dashboard{padding:4rem 1.5rem;}
+
+    .services-grid{grid-template-columns:1fr;}
+    .pricing-grid{grid-template-columns:1fr;}
+    .testimonials-grid{grid-template-columns:1fr;}
+    .dashboard-grid{grid-template-columns:repeat(2,1fr);}
+
+    .contact-grid{grid-template-columns:1fr;}
+    .form-row{grid-template-columns:1fr;}
+
+    #how > div{grid-template-columns:1fr !important;gap:2rem;}
+
+    .footer-grid{grid-template-columns:1fr 1fr;}
+    .footer-bottom{flex-direction:column;text-align:center;}
+
+    .modal{padding:2rem 1.5rem;}
+
+    .step{grid-template-columns:60px 1fr;gap:1rem;}
+    .step-num{font-size:2rem;}
+  }
+
+  @media(max-width:480px){
+    .hero-title{font-size:clamp(2.5rem,12vw,4rem);}
+    .dashboard-grid{grid-template-columns:1fr 1fr;}
+    .footer-grid{grid-template-columns:1fr;}
+    .hero-stats{flex-direction:column;gap:1rem;}
+    .hero-actions{flex-direction:column;}
+    .btn-primary,.btn-outline{width:100%;justify-content:center;text-align:center;}
+    .pricing-toggle{flex-wrap:wrap;justify-content:center;}
+  }
 </style>
 </head>
 <body>
@@ -589,9 +655,30 @@
     </div>
     <a href="#dashboard">Dashboard</a>
     <a href="#contact">Contacto</a>
-    <a href="#" class="btn-nav" onclick="openModal('auth');return false;">Acceder</a>
+    <!-- Botón acceder (cuando no hay sesión) -->
+    <a href="#" class="btn-nav" id="btnAcceder" onclick="openModal('auth');return false;">Acceder</a>
+    <!-- Perfil usuario (cuando hay sesión) -->
+    <div class="nav-user" id="navUser">
+      <div class="nav-avatar" id="navAvatar">?</div>
+      <span class="nav-user-name" id="navUserName">Usuario</span>
+      <button class="btn-logout" onclick="logout()">Salir</button>
+    </div>
   </div>
+  <!-- Hamburger móvil -->
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+
+<!-- MENÚ MÓVIL -->
+<div class="nav-mobile-menu" id="mobileMenu">
+  <a href="#services" onclick="closeMobileMenu()">Servicios</a>
+  <a href="#pricing" onclick="closeMobileMenu()">Planes</a>
+  <a href="#dashboard" onclick="closeMobileMenu()">Dashboard</a>
+  <a href="#testimonials" onclick="closeMobileMenu()">Clientes</a>
+  <a href="#contact" onclick="closeMobileMenu()">Contacto</a>
+  <a href="#" onclick="openModal('auth');closeMobileMenu();return false;" style="color:var(--accent);">Acceder</a>
+</div>
 
 <!-- HERO -->
 <section id="hero">
@@ -638,7 +725,7 @@
 
 <!-- MARQUEE -->
 <div class="marquee-section">
-  <div class="marquee-track" id="marquee">
+  <div class="marquee-track">
     <span class="marquee-item">ISO 27001 Certificado <span class="marquee-sep">✦</span></span>
     <span class="marquee-item">SOC 2 Type II <span class="marquee-sep">✦</span></span>
     <span class="marquee-item">GDPR Compliant <span class="marquee-sep">✦</span></span>
@@ -1020,6 +1107,14 @@
   </div>
 </footer>
 
+<!-- BARRA DE CONTACTO AL FINAL -->
+<div class="footer-contact-bar">
+  <p>¿Tienes dudas o necesitas una evaluación de seguridad personalizada?</p>
+  <a href="#contact" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'});return false;">
+    📩 Contáctanos ahora →
+  </a>
+</div>
+
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
@@ -1029,6 +1124,8 @@
       <button class="modal-tab active" onclick="switchTab('login')">Iniciar sesión</button>
       <button class="modal-tab" onclick="switchTab('register')">Registrarse</button>
     </div>
+
+    <!-- LOGIN -->
     <div id="loginContent" class="modal-content active">
       <div class="form-group">
         <label class="form-label">Email</label>
@@ -1036,11 +1133,16 @@
       </div>
       <div class="form-group">
         <label class="form-label">Contraseña</label>
-        <input class="form-input" type="password" placeholder="••••••••" id="loginPass">
+        <div class="pass-wrapper">
+          <input class="form-input" type="password" placeholder="••••••••" id="loginPass">
+          <button class="pass-toggle" type="button" onclick="togglePass('loginPass', this)">👁</button>
+        </div>
       </div>
       <button class="btn-submit" onclick="handleLogin()">Iniciar sesión →</button>
       <p style="text-align:center;margin-top:1rem;font-size:.8rem;color:var(--muted);">¿Olvidaste tu contraseña? <a href="#" style="color:var(--accent);text-decoration:none;">Recuperar</a></p>
     </div>
+
+    <!-- REGISTRO -->
     <div id="registerContent" class="modal-content">
       <div class="form-row">
         <div class="form-group">
@@ -1062,18 +1164,28 @@
       </div>
       <div class="form-group">
         <label class="form-label">Contraseña</label>
-        <input class="form-input" type="password" placeholder="Mínimo 8 caracteres" id="regPass">
+        <div class="pass-wrapper">
+          <input class="form-input" type="password" placeholder="Mín. 8 caracteres" id="regPass" oninput="checkPassStrength(this.value)">
+          <button class="pass-toggle" type="button" onclick="togglePass('regPass', this)">👁</button>
+        </div>
+        <div class="pass-strength">
+          <div class="pass-strength-bar">
+            <div class="pass-strength-fill" id="passStrengthFill" style="width:0%;background:var(--accent2);"></div>
+          </div>
+          <div class="pass-strength-text" id="passStrengthText">Introduce una contraseña</div>
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Plan</label>
-        <select class="form-select form-input" id="regPlan">
-          <option>Starter — $49/mes</option>
-          <option>Professional — $149/mes</option>
-          <option>Enterprise — $499/mes</option>
-        </select>
+        <label class="form-label">Confirmar contraseña</label>
+        <div class="pass-wrapper">
+          <input class="form-input" type="password" placeholder="Repite la contraseña" id="regPassConfirm">
+          <button class="pass-toggle" type="button" onclick="togglePass('regPassConfirm', this)">👁</button>
+        </div>
       </div>
       <button class="btn-submit" onclick="handleRegister()">Crear cuenta →</button>
     </div>
+
+    <!-- ÉXITO -->
     <div class="auth-success" id="authSuccess">
       <div class="check">✅</div>
       <h3 id="successTitle">¡Bienvenido!</h3>
@@ -1094,34 +1206,21 @@
       </div>
       <div class="checkout-plan-price">$<span id="checkoutPlanPrice">149</span><span style="font-size:.9rem;color:var(--muted)">/mes</span></div>
     </div>
+    <div style="background:rgba(0,245,196,0.05);border:1px solid rgba(0,245,196,0.2);border-radius:12px;padding:1rem;margin-bottom:1.5rem;">
+      <p style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent3);">🔒 PAGO 100% SEGURO — Procesado por Stripe</p>
+      <p style="font-size:.8rem;color:var(--muted);margin-top:.4rem;">Serás redirigido a la página segura de Stripe para completar tu pago con tarjeta.</p>
+    </div>
     <div class="form-group">
-      <label class="form-label">Email</label>
+      <label class="form-label">Email de facturación</label>
       <input class="form-input" type="email" placeholder="correo@empresa.com" id="checkoutEmail">
     </div>
-    <div class="form-group">
-      <label class="form-label">Número de tarjeta</label>
-      <input class="form-input" type="text" placeholder="4242 4242 4242 4242" id="checkoutCard" maxlength="19" oninput="formatCard(this)">
-      <div class="card-icons">
-        <span class="card-icon">VISA</span>
-        <span class="card-icon">MC</span>
-        <span class="card-icon">AMEX</span>
-      </div>
+    <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <span class="card-icon">VISA</span>
+      <span class="card-icon">Mastercard</span>
+      <span class="card-icon">AMEX</span>
+      <span class="card-icon">MXN</span>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Vencimiento</label>
-        <input class="form-input" type="text" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)" id="checkoutExp">
-      </div>
-      <div class="form-group">
-        <label class="form-label">CVV</label>
-        <input class="form-input" type="text" placeholder="•••" maxlength="4" id="checkoutCVV">
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Nombre en tarjeta</label>
-      <input class="form-input" type="text" placeholder="NOMBRE APELLIDO" id="checkoutName">
-    </div>
-    <button class="btn-submit" onclick="processPayment()" id="payBtn">🔒 Pagar de forma segura →</button>
+    <button class="btn-submit" onclick="processPayment()" id="payBtn">🔒 Continuar al pago →</button>
     <p style="text-align:center;margin-top:.75rem;font-size:.75rem;color:var(--muted);font-family:'Space Mono',monospace;">Cifrado SSL 256-bit · Cancela en cualquier momento</p>
     <div class="auth-success" id="paySuccess" style="display:none;">
       <div class="check">🔐</div>
@@ -1130,65 +1229,147 @@
     </div>
   </div>
 </div>
+
 <script>
 const API = 'https://web-production-3e59e.up.railway.app';
 
-// LOGIN
+// ── SESIÓN ────────────────────────────────────────────
+let currentUser = JSON.parse(sessionStorage.getItem('aegis_user') || 'null');
+
+function updateNavUser() {
+  if (currentUser) {
+    document.getElementById('btnAcceder').style.display = 'none';
+    const navUser = document.getElementById('navUser');
+    navUser.classList.add('visible');
+    document.getElementById('navUserName').textContent = currentUser.name;
+    document.getElementById('navAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+  } else {
+    document.getElementById('btnAcceder').style.display = '';
+    document.getElementById('navUser').classList.remove('visible');
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('aegis_user');
+  currentUser = null;
+  updateNavUser();
+}
+
+// ── CONTRASEÑA ────────────────────────────────────────
+function togglePass(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
+  }
+}
+
+function checkPassStrength(val) {
+  const fill = document.getElementById('passStrengthFill');
+  const text = document.getElementById('passStrengthText');
+  if (!fill) return;
+
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+
+  const levels = [
+    { w: '0%', color: 'var(--accent2)', label: 'Introduce una contraseña' },
+    { w: '25%', color: 'var(--accent2)', label: 'Muy débil' },
+    { w: '50%', color: '#f5a623', label: 'Débil' },
+    { w: '75%', color: '#f5d623', label: 'Aceptable' },
+    { w: '100%', color: 'var(--accent3)', label: '¡Contraseña segura! ✓' },
+  ];
+
+  const lvl = val.length === 0 ? levels[0] : levels[score];
+  fill.style.width = lvl.w;
+  fill.style.background = lvl.color;
+  text.textContent = lvl.label;
+  text.style.color = lvl.color;
+}
+
+function validatePassword(pass) {
+  if (pass.length < 8) return 'La contraseña debe tener al menos 8 caracteres';
+  if (!/[A-Z]/.test(pass)) return 'Debe contener al menos una mayúscula';
+  if (!/[0-9]/.test(pass)) return 'Debe contener al menos un número';
+  if (!/[^A-Za-z0-9]/.test(pass)) return 'Debe contener al menos un carácter especial (!@#$%...)';
+  return null;
+}
+
+// ── LOGIN ─────────────────────────────────────────────
 async function handleLogin() {
   const email = document.getElementById('loginEmail').value;
   const pass = document.getElementById('loginPass').value;
-  if(!email || !pass) { alert('Por favor completa todos los campos'); return; }
+  if (!email || !pass) { alert('Por favor completa todos los campos'); return; }
+
   const res = await fetch(`${API}/login`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password: pass })
   });
   const data = await res.json();
-  if(!res.ok) { alert(data.detail); return; }
-  document.getElementById('loginContent').style.display = 'none';
-  document.getElementById('authSuccess').style.display = 'block';
-  document.getElementById('successTitle').textContent = `¡Bienvenido, ${data.name}!`;
-  document.getElementById('successMsg').textContent = `Sesión iniciada con ${email}`;
+  if (!res.ok) { alert(data.detail); return; }
+
+  currentUser = { name: data.name, email: data.email, plan: data.plan };
+  sessionStorage.setItem('aegis_user', JSON.stringify(currentUser));
+  updateNavUser();
+  closeModal('auth');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// REGISTRO
+// ── REGISTRO ──────────────────────────────────────────
 async function handleRegister() {
   const name = document.getElementById('regName').value;
   const last = document.getElementById('regLast').value;
   const email = document.getElementById('regEmail').value;
   const company = document.getElementById('regCompany').value;
   const pass = document.getElementById('regPass').value;
-  const plan = document.getElementById('regPlan').value;
-  if(!name || !email || !pass || !company) { alert('Por favor completa todos los campos'); return; }
-  if(pass.length < 8) { alert('La contraseña debe tener al menos 8 caracteres'); return; }
+  const passConfirm = document.getElementById('regPassConfirm').value;
+
+  if (!name || !email || !pass || !company) { alert('Por favor completa todos los campos'); return; }
+
+  const passError = validatePassword(pass);
+  if (passError) { alert(passError); return; }
+
+  if (pass !== passConfirm) { alert('Las contraseñas no coinciden'); return; }
+
   const res = await fetch(`${API}/register`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ name, last_name: last, email, company, password: pass, plan })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, last_name: last, email, company, password: pass })
   });
   const data = await res.json();
-  if(!res.ok) { alert(data.detail); return; }
-  document.getElementById('registerContent').style.display = 'none';
-  document.getElementById('authSuccess').style.display = 'block';
-  document.getElementById('successTitle').textContent = `¡Cuenta creada!`;
-  document.getElementById('successMsg').textContent = `Bienvenido ${name}. Tu plan ${plan} está activo.`;
+  if (!res.ok) { alert(data.detail); return; }
+
+  currentUser = { name: data.name, email: data.email, plan: data.plan };
+  sessionStorage.setItem('aegis_user', JSON.stringify(currentUser));
+  updateNavUser();
+  closeModal('auth');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// CONTACTO
+// ── CONTACTO ──────────────────────────────────────────
 async function submitContact() {
   const name = document.getElementById('contactName').value;
   const email = document.getElementById('contactEmail').value;
   const company = document.getElementById('contactCompany').value;
   const service = document.getElementById('contactService').value;
   const msg = document.getElementById('contactMsg').value;
-  if(!name || !email) { alert('Por favor completa tu nombre y email'); return; }
+  if (!name || !email) { alert('Por favor completa tu nombre y email'); return; }
+
   const res = await fetch(`${API}/contact`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, company, service, message: msg })
   });
   const data = await res.json();
-  if(!res.ok) { alert('Error al enviar mensaje'); return; }
+  if (!res.ok) { alert('Error al enviar mensaje'); return; }
+
   const btn = event.target;
   btn.textContent = '✅ Mensaje enviado — Te contactamos en menos de 2 horas';
   btn.style.background = 'rgba(0,245,196,0.15)';
@@ -1198,70 +1379,82 @@ async function submitContact() {
   setTimeout(() => { btn.textContent = 'Enviar solicitud →'; btn.style.cssText = ''; }, 5000);
 }
 
-// PAGO
+// ── PAGO CON STRIPE ───────────────────────────────────
 async function processPayment() {
   const email = document.getElementById('checkoutEmail').value;
-  const card = document.getElementById('checkoutCard').value;
-  const exp = document.getElementById('checkoutExp').value;
-  const cvv = document.getElementById('checkoutCVV').value;
-  const name = document.getElementById('checkoutName').value;
   const plan = document.getElementById('checkoutPlanName').textContent;
   const amount = parseInt(document.getElementById('checkoutPlanPrice').textContent);
-  if(!email || !card || !exp || !cvv || !name) { alert('Por favor completa todos los campos de pago'); return; }
+  if (!email) { alert('Por favor ingresa tu email para continuar'); return; }
+
   const btn = document.getElementById('payBtn');
-  btn.textContent = '⏳ Procesando...';
+  btn.textContent = '⏳ Redirigiendo a pago seguro...';
   btn.disabled = true;
-  const res = await fetch(`${API}/checkout`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ email, plan, amount })
-  });
-  const data = await res.json();
-  btn.style.display = 'none';
-  document.getElementById('paySuccess').style.display = 'block';
+
+  try {
+    const res = await fetch(`${API}/create-checkout-session`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, plan, amount })
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.detail || 'Error al procesar el pago');
+      btn.disabled = false;
+      btn.textContent = '🔒 Pagar de forma segura →';
+      return;
+    }
+    window.location.href = data.url;
+  } catch(e) {
+    alert('Error al conectar con el servidor de pagos. Intenta de nuevo.');
+    btn.disabled = false;
+    btn.textContent = '🔒 Pagar de forma segura →';
+  }
 }
 
-// CURSOR
+// ── CURSOR ────────────────────────────────────────────
 const cursor = document.getElementById('cursor');
 const ring = document.getElementById('cursor-ring');
 let mx=0, my=0, rx=0, ry=0;
-document.addEventListener('mousemove', e => {
-  mx = e.clientX; my = e.clientY;
-  cursor.style.left = mx - 6 + 'px';
-  cursor.style.top = my - 6 + 'px';
-});
-function animRing() {
-  rx += (mx - rx - 20) * .12;
-  ry += (my - ry - 20) * .12;
-  ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-  requestAnimationFrame(animRing);
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+if (!isMobile) {
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx - 6 + 'px';
+    cursor.style.top = my - 6 + 'px';
+  });
+  function animRing() {
+    rx += (mx - rx - 20) * .12;
+    ry += (my - ry - 20) * .12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+  document.querySelectorAll('a,button,.service-card,.pricing-card,.toggle-switch').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform='scale(2)'; ring.style.opacity='0.5'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform='scale(1)'; ring.style.opacity='1'; });
+  });
 }
-animRing();
-document.querySelectorAll('a,button,.service-card,.pricing-card,.toggle-switch').forEach(el => {
-  el.addEventListener('mouseenter', () => { cursor.style.transform='scale(2)'; ring.style.opacity='0.5'; });
-  el.addEventListener('mouseleave', () => { cursor.style.transform='scale(1)'; ring.style.opacity='1'; });
-});
 
-// SCROLL PROGRESS
+// ── SCROLL PROGRESS ───────────────────────────────────
 window.addEventListener('scroll', () => {
   const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
   document.getElementById('progress').style.width = pct + '%';
 });
 
-// SCROLL REVEAL
+// ── SCROLL REVEAL ─────────────────────────────────────
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el => observer.observe(el));
 
-// COUNTERS ANIMATION
-function animateCounter(id, target, duration=2000, suffix='') {
+// ── COUNTERS ──────────────────────────────────────────
+function animateCounter(id, target, duration=2000) {
   const el = document.getElementById(id);
   if(!el) return;
   let start = 0, step = target / (duration/16);
   const t = setInterval(() => {
     start = Math.min(start + step, target);
-    el.textContent = Math.floor(start).toLocaleString() + suffix;
+    el.textContent = Math.floor(start).toLocaleString();
     if(start >= target) clearInterval(t);
   }, 16);
 }
@@ -1270,14 +1463,14 @@ const dashObserver = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if(e.isIntersecting) {
       animateCounter('threatsBlocked', 2347);
-      animateCounter('eventsAnalyzed', 18.4, 1500);
+      animateCounter('eventsAnalyzed', 18);
       animateCounter('activeAlerts', 3);
       animateCounter('alertCount', 847);
       setTimeout(() => {
         document.getElementById('bar1').style.width = '82%';
         document.getElementById('bar2').style.width = '95%';
         document.getElementById('bar3').style.width = '15%';
-        document.getElementById('bar4').style.width = '98.7%';
+        document.getElementById('bar4').style.width = '98%';
       }, 200);
       dashObserver.disconnect();
     }
@@ -1286,7 +1479,7 @@ const dashObserver = new IntersectionObserver((entries) => {
 const dashEl = document.querySelector('.dashboard-container');
 if(dashEl) dashObserver.observe(dashEl);
 
-// LIVE TIME + LOG
+// ── LIVE LOG ──────────────────────────────────────────
 const logMessages = [
   ['log-status-ok', 'Escaneo de red completado — Sin anomalías detectadas'],
   ['log-status-ok', 'Firewall actualizado — Regla #4829 aplicada'],
@@ -1314,7 +1507,7 @@ function updateLog() {
 setInterval(updateLog, 3500);
 updateLog();
 
-// MAP DOTS
+// ── MAP DOTS ──────────────────────────────────────────
 const mapEl = document.getElementById('mapDots');
 if(mapEl) {
   setInterval(() => {
@@ -1325,7 +1518,7 @@ if(mapEl) {
   }, 400);
 }
 
-// BILLING TOGGLE
+// ── BILLING TOGGLE ────────────────────────────────────
 let isAnnual = false;
 const prices = { Starter: [49, 39], Professional: [149, 119], Enterprise: [499, 399] };
 function toggleBilling() {
@@ -1337,16 +1530,22 @@ function toggleBilling() {
   });
 }
 
-// MODALES
+// ── MODALES ───────────────────────────────────────────
 function openModal(type) {
   document.getElementById(type + 'Modal').classList.add('active');
 }
 function closeModal(type) {
   document.getElementById(type + 'Modal').classList.remove('active');
-  document.getElementById('authSuccess').style.display = 'none';
+  if (type === 'auth') {
+    document.getElementById('authSuccess').style.display = 'none';
+    document.getElementById('loginContent').style.display = '';
+    document.getElementById('registerContent').style.display = '';
+  }
   if(type === 'checkout') {
     document.getElementById('paySuccess').style.display = 'none';
     document.getElementById('payBtn').style.display = 'block';
+    document.getElementById('payBtn').disabled = false;
+    document.getElementById('payBtn').textContent = '🔒 Pagar de forma segura →';
   }
 }
 document.querySelectorAll('.modal-overlay').forEach(el => {
@@ -1359,12 +1558,14 @@ function switchTab(tab) {
   document.getElementById('registerContent').classList.toggle('active', tab==='register');
 }
 
-// CHECKOUT
+// ── CHECKOUT ──────────────────────────────────────────
 function openCheckout(plan, price) {
   document.getElementById('checkoutPlanName').textContent = plan;
   document.getElementById('checkoutPlanPrice').textContent = isAnnual ? prices[plan][1] : price;
   document.getElementById('paySuccess').style.display = 'none';
   document.getElementById('payBtn').style.display = 'block';
+  document.getElementById('payBtn').disabled = false;
+  document.getElementById('payBtn').textContent = '🔒 Pagar de forma segura →';
   document.getElementById('checkoutModal').classList.add('active');
 }
 
@@ -1378,10 +1579,21 @@ function formatExpiry(el) {
   el.value = v;
 }
 
-// NAV SCROLL
+// ── HAMBURGER MÓVIL ───────────────────────────────────
+function toggleMobileMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+}
+
+// ── NAV SCROLL ────────────────────────────────────────
 window.addEventListener('scroll', () => {
   document.getElementById('mainNav').style.boxShadow = window.scrollY > 50 ? '0 4px 30px rgba(0,0,0,.5)' : '';
 });
+
+// ── INIT ──────────────────────────────────────────────
+updateNavUser();
 </script>
 </body>
 </html>
