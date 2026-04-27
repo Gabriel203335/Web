@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -160,7 +160,6 @@ def create_checkout_session(data: CheckoutForm, db: Session = Depends(get_db)):
 # WEBHOOK DE STRIPE (para confirmar pagos exitosos)
 @app.post("/webhook")
 async def stripe_webhook(request: Request, db: Session = Depends(get_db)):
-    from fastapi import Request
     payload = await request.body()
     sig_header = request.headers.get("stripe-signature")
     webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET", "")
